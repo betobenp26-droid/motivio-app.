@@ -43,6 +43,21 @@
 <div class="footer">
     Proyecto Motivio.pedro - Procesamiento 100% en tu dispositivo.
 </div>
+<script>
+    const videoInput = document.getElementById('videoInput');
+    const display = document.getElementById('display');
+
+    videoInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const url = URL.createObjectURL(file);
+            display.innerHTML = `<video controls style="width:100%; max-height:100%;">
+                <source src="${url}" type="${file.type}">
+            </video>`;
+        }
+    });
+</script>
+
 
 </body>
 </html>
