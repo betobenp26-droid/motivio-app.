@@ -3,55 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Motivio.pedro | Editor Pro</title>
+    <title>Motivio.pedro | Studio</title>
     <style>
-        body { background-color: #0f0f0f; color: #ffffff; font-family: sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
-        header { background: #1a1a1a; padding: 10px; border-bottom: 2px solid #00a8ff; text-align: center; }
-        .brand { font-size: 24px; font-weight: bold; color: #00a8ff; }
-        .brand span { color: white; }
+        body { background-color: #0a0a0a; color: #ffffff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+        header { background: #111; padding: 15px; border-bottom: 1px solid #333; text-align: center; }
+        .brand { font-size: 22px; font-weight: bold; letter-spacing: 1px; color: #00a8ff; }
+        .brand span { color: #fff; }
 
-        /* EL CANDADO PARA EL VIDEO */
-        .preview-container {
-            width: 300px; /* Tamaño inicial base */
-            height: 300px;
-            margin: 20px auto;
-            background: #000;
-            border: 2px solid #333;
-            border-radius: 8px;
+        /* ÁREA DE TRABAJO PROFESIONAL */
+        .workspace {
+            width: 100%;
+            height: 60vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden; /* NO deja salir nada */
+            background: #000;
             position: relative;
-            transition: all 0.3s ease;
+            overflow: hidden;
         }
 
-        /* Fuerza al video a obedecer al contenedor */
+        /* EL MARCO DINÁMICO */
+        .viewport {
+            border: 1px solid #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
         video {
-            display: block;
-            max-width: 100% !important;
-            max-height: 100% !important;
-            width: auto !important;
-            height: auto !important;
-            object-fit: contain;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /* Esto asegura que el video se vea COMPLETO siempre */
         }
 
-        .controls-row { display: flex; justify-content: center; gap: 10px; margin: 10px 0; flex-wrap: wrap; }
-        
-        button { 
-            background: #262626; color: white; border: 1px solid #444; 
-            padding: 12px 18px; border-radius: 6px; font-weight: bold; cursor: pointer;
-            font-size: 14px;
+        /* SELECTOR DE FORMATO TÉCNICO */
+        .format-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            background: #111;
         }
-        
-        button:active { background: #00a8ff; }
 
-        .toolbar { 
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; 
-            padding: 15px; max-width: 500px; margin: 0 auto; 
+        .ratio-btn {
+            background: transparent;
+            color: #888;
+            border: 1px solid #333;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
         }
-        
-        .footer { text-align: center; padding: 20px; font-size: 12px; color: #555; }
+
+        .ratio-btn:hover, .ratio-btn.active {
+            color: #00a8ff;
+            border-color: #00a8ff;
+            background: rgba(0, 168, 255, 0.1);
+        }
+
+        /* BARRA DE HERRAMIENTAS INFERIOR */
+        .bottom-nav {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .tool-btn {
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .export-btn {
+            grid-column: span 3;
+            background: #00a8ff;
+            color: white;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -60,54 +100,63 @@
     <div class="brand">MOTIVIO<span>.pedro</span></div>
 </header>
 
-<div class="preview-container" id="container">
-    <div id="display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
-        <button onclick="document.getElementById('videoInput').click()">📁 Abrir Video</button>
-        <input type="file" id="videoInput" accept="video/*" style="display:none">
+<div class="workspace">
+    <div class="viewport" id="viewport" style="width: 300px; height: 300px;">
+        <div id="player" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+            <button onclick="document.getElementById('fileIn').click()" style="background:#222; color:#fff; border:1px solid #444; padding:10px 20px; border-radius:5px; cursor:pointer;">+ CARGAR MEDIA</button>
+        </div>
     </div>
+    <input type="file" id="fileIn" accept="video/*" style="display:none">
 </div>
 
-<p style="text-align:center; font-size:14px; color:#aaa;">Pica un formato para ajustar la vista:</p>
-<div class="controls-row">
-    <button onclick="cambiarFormato('9/16')">📱 Vertical</button>
-    <button onclick="cambiarFormato('16/9')">📺 Horizontal</button>
-    <button onclick="cambiarFormato('1/1')">🔳 Cuadrado</button>
+<div class="format-selector">
+    <button class="ratio-btn" onclick="setRatio('9:16', this)">9:16</button>
+    <button class="ratio-btn" onclick="setRatio('1:1', this)">1:1</button>
+    <button class="ratio-btn active" onclick="setRatio('16:9', this)">16:9</button>
+    <button class="ratio-btn" onclick="setRatio('4:5', this)">4:5</button>
 </div>
 
-<div class="toolbar">
-    <button onclick="alert('Motor de corte en preparación...')">✂️ Cortar</button>
-    <button onclick="alert('IA de voz en preparación...')">🎙️ Voz IA</button>
-    <button style="grid-column: span 2; background:#00a8ff;">💾 EXPORTAR VIDEO</button>
+<div class="bottom-nav">
+    <button class="tool-btn" onclick="alert('Iniciando motor de corte...')">✂️ CORTAR</button>
+    <button class="tool-btn" onclick="alert('Cargando IA de voz...')">🎙️ VOZ IA</button>
+    <button class="tool-btn" onclick="alert('Generando Avatar...')">👤 AVATAR</button>
+    <button class="tool-btn export-btn">EXPORTAR PRO</button>
 </div>
-
-<div class="footer">Motivio.pedro v1.2 | Hardware del usuario activo</div>
 
 <script>
-    const videoInput = document.getElementById('videoInput');
-    const display = document.getElementById('display');
-    const container = document.getElementById('container');
+    const fileIn = document.getElementById('fileIn');
+    const player = document.getElementById('player');
+    const viewport = document.getElementById('viewport');
 
-    videoInput.addEventListener('change', function() {
+    fileIn.addEventListener('change', function() {
         const file = this.files[0];
         if (file) {
             const url = URL.createObjectURL(file);
-            display.innerHTML = `<video id="mainVideo" controls autoplay muted loop>
+            player.innerHTML = `<video id="v" controls autoplay muted loop>
                 <source src="${url}" type="${file.type}">
             </video>`;
         }
     });
 
-    function cambiarFormato(ratio) {
-        if (ratio === '9/16') {
-            container.style.width = "225px";
-            container.style.height = "400px";
-        } else if (ratio === '16/9') {
-            container.style.width = "90%";
-            container.style.maxWidth = "600px";
-            container.style.height = "250px";
-        } else if (ratio === '1/1') {
-            container.style.width = "300px";
-            container.style.height = "300px";
+    function setRatio(ratio, btn) {
+        // Quitar clase activa de otros botones
+        document.querySelectorAll('.ratio-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Ajustar el marco según el número profesional
+        if (ratio === '9:16') {
+            viewport.style.width = "200px";
+            viewport.style.height = "355px";
+        } else if (ratio === '16:9') {
+            viewport.style.width = "90%";
+            viewport.style.maxWidth = "550px";
+            viewport.style.height = "250px";
+        } else if (ratio === '1:1') {
+            viewport.style.width = "300px";
+            viewport.style.height = "300px";
+        } else if (ratio === '4:5') {
+            viewport.style.width = "280px";
+            viewport.style.height = "350px";
         }
     }
 </script>
